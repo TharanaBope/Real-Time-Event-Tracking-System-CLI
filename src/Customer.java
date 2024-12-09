@@ -8,7 +8,7 @@ public class Customer implements Runnable {
         if (customerRetrievalRate <= 0) {
             throw new IllegalArgumentException("Retrieval rate and quantity must be positive.");
         }
-        this.ticketPool = ticketPool;
+        this.ticketPool = ticketPool;//ds
         this.customerRetrievalRate = customerRetrievalRate;
         this.config = config;
     }

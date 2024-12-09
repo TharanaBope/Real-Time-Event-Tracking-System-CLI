@@ -7,7 +7,7 @@ public class Configuration implements Serializable {
     int ticketReleaseRate;
     int customerRetrievalRate;
     int maxTicketCapacity;
-
+//
     public int getTotalTickets() {
         return totalTickets;
     }
