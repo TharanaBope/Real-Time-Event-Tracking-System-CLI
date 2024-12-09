@@ -13,6 +13,9 @@ public class Configuration implements Serializable {
     }
 
     public void setTotalTickets(int totalTickets) {
+        if (totalTickets <= 0) {
+            throw new IllegalArgumentException("Total tickets must be greater than 0.");
+        }
         this.totalTickets = totalTickets;
     }
 
