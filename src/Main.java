@@ -38,7 +38,7 @@ public class Main {
         vendorThread.start();
 
         // Create and start the customer thread
-        Customer customer = new Customer(ticketPool, config.customerRetrievalRate, 5);
+        Customer customer = new Customer(ticketPool, config.customerRetrievalRate, config.totalTickets);
         Thread customerThread = new Thread(customer, "Customer");
         customerThread.start();
     }

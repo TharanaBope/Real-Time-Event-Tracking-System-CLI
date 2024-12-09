@@ -8,6 +8,14 @@ public class Configuration implements Serializable {
     int customerRetrievalRate;
     int maxTicketCapacity;
 
+    public int getTotalTickets() {
+        return totalTickets;
+    }
+
+    public void setTotalTickets(int totalTickets) {
+        this.totalTickets = totalTickets;
+    }
+
     // Save configuration to a file
     public void saveConfiguration(String filePath) throws IOException {
         Gson gson = new Gson();
