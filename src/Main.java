@@ -6,18 +6,23 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Real-Time Ticketing System!");
 
-        System.out.println("System setup in progress...");
+        //System.out.println("System setup in progress...");
 
         System.out.print("Do you want to load configuration from a file? (yes/no): ");
         String response = scanner.nextLine().trim().toLowerCase();
 
         Configuration config;
+
         if (response.equals("yes")) {
             System.out.print("Enter the file path: ");
             String filePath = scanner.nextLine();
             try {
                 config = Configuration.loadConfiguration(filePath);
                 System.out.println("Configuration loaded successfully.");
+                System.out.println("Total Tickets: " + config.totalTickets);
+                System.out.println("Ticket Release Rate: " + config.ticketReleaseRate);
+                System.out.println("Customer Retrieval Rate: " + config.customerRetrievalRate);
+                System.out.println("Max Ticket Capacity: " + config.maxTicketCapacity);
             } catch (IOException e) {
                 System.out.println("Error loading configuration: " + e.getMessage());
                 System.out.println("Switching to manual configuration input.");
@@ -28,21 +33,56 @@ public class Main {
         }
         System.out.println("Configuration setup complete.");
 
+        // Create the TicketPool
+        TicketPool ticketPool = new TicketPool(config.maxTicketCapacity);
+
+        // Create and start the vendor thread
+        Vendor vendor = new Vendor(config.totalTickets, config.ticketReleaseRate, ticketPool);
+        Thread vendorThread = new Thread(vendor, "Vendor");
+        vendorThread.start();
+
+        // Create and start the customer thread
+        Customer customer = new Customer(ticketPool, config.customerRetrievalRate, 5);
+        Thread customerThread = new Thread(customer, "Customer");
+        customerThread.start();
+
     }
     private static Configuration inputConfiguration(Scanner scanner) {
         Configuration config = new Configuration();
 
+        // Input total tickets with validation
         config.totalTickets = getValidatedInput(scanner, "Enter total tickets: ",
                 value -> value > 0, "Total tickets must be a positive number.");
 
+        // Input ticket release rate with validation
         config.ticketReleaseRate = getValidatedInput(scanner, "Enter ticket release rate (in seconds): ",
                 value -> value > 0, "Ticket release rate must be a positive number.");
 
+        // Input customer retrieval rate with validation
         config.customerRetrievalRate = getValidatedInput(scanner, "Enter customer retrieval rate (in seconds): ",
                 value -> value > 0, "Customer retrieval rate must be a positive number.");
 
+        // Input maximum ticket capacity with validation
+        // Input maximum ticket capacity with validation
         config.maxTicketCapacity = getValidatedInput(scanner, "Enter max ticket capacity: ",
-                value -> value > 0, "Max ticket capacity must be a positive number.");
+                value -> value > 0 && value >= config.totalTickets,
+                "Max ticket capacity must be greater than 0 and greater than or equal to total tickets.");
+
+
+        // Optionally save configuration to a file
+        System.out.print("Do you want to save this configuration to a file? (yes/no): ");
+        String saveResponse = scanner.nextLine().trim().toLowerCase();
+        if (saveResponse.equals("yes")) {
+            System.out.print("Enter the file path to save: ");
+            String filePath = scanner.nextLine();
+            try {
+                config.saveConfiguration(filePath);
+                System.out.println("Configuration saved successfully.");
+            } catch (IOException e) {
+                System.out.println("Error saving configuration: " + e.getMessage());
+            }
+        }
+
         return config;
     }
 
@@ -63,5 +103,5 @@ public class Main {
         }
         return value;
     }
-
 }
+
