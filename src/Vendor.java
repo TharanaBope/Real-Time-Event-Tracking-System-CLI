@@ -3,6 +3,7 @@ public class Vendor implements Runnable {
     private final int ticketReleaseRate; // Delay in seconds between ticket releases
     private final TicketPool ticketPool;
 
+
     public Vendor(int totalTickets, int ticketReleaseRate, TicketPool ticketPool) {
         if (totalTickets <= 0 || ticketReleaseRate <= 0) {
             throw new IllegalArgumentException("Total tickets and release rate must be positive.");

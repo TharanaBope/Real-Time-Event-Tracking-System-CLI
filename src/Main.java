@@ -4,18 +4,15 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the Real-Time Ticketing System!");
-
-        //System.out.println("System setup in progress...");
+        Configuration config;
 
         System.out.print("Do you want to load configuration from a file? (yes/no): ");
         String response = scanner.nextLine().trim().toLowerCase();
 
-        Configuration config;
-
         if (response.equals("yes")) {
             System.out.print("Enter the file path: ");
             String filePath = scanner.nextLine();
+
             try {
                 config = Configuration.loadConfiguration(filePath);
                 System.out.println("Configuration loaded successfully.");
@@ -31,7 +28,6 @@ public class Main {
         } else {
             config = inputConfiguration(scanner);
         }
-        System.out.println("Configuration setup complete.");
 
         // Create the TicketPool
         TicketPool ticketPool = new TicketPool(config.maxTicketCapacity);
@@ -45,8 +41,8 @@ public class Main {
         Customer customer = new Customer(ticketPool, config.customerRetrievalRate, 5);
         Thread customerThread = new Thread(customer, "Customer");
         customerThread.start();
-
     }
+
     private static Configuration inputConfiguration(Scanner scanner) {
         Configuration config = new Configuration();
 
@@ -104,4 +100,5 @@ public class Main {
         return value;
     }
 }
+
 

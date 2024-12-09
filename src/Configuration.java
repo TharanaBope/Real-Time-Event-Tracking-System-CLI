@@ -13,6 +13,9 @@ public class Configuration implements Serializable {
         Gson gson = new Gson();
         try (FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(this, writer);
+        } catch (JsonSyntaxException e) {
+            // Handle invalid JSON format errors
+            throw new IOException("Invalid JSON format in configuration file.", e);
         }
     }
 
