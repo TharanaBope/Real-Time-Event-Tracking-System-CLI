@@ -15,19 +15,20 @@ public class Vendor implements Runnable {
 
     @Override
     public void run() {
-        for (int i = 1; i <= totalTickets; i++) {
-            Ticket ticket = new Ticket(i, "Event-" + i, 100.0);
-            ticketPool.addTicket(ticket);
-            System.out.println("Ticket added: " + ticket);
+        try {
+            for (int i = 1; i <= totalTickets; i++) {
+                Ticket ticket = new Ticket(i, "Event-" + i);
+                ticketPool.addTicket(ticket);
+                System.out.println("Ticket added: " + ticket);
 
-            try {
-                Thread.sleep(ticketReleaseRate * 1000L);
-            } catch (InterruptedException e) {
-                System.err.println("Vendor thread interrupted.");
-                Thread.currentThread().interrupt();
-                break;
+                Thread.sleep(ticketReleaseRate * 1000L); // Simulate release delay
             }
+            System.out.println("Vendor has added all tickets.");
+        } catch (InterruptedException e) {
+            System.err.println("Vendor thread interrupted. Terminating gracefully.");
+            Thread.currentThread().interrupt(); // Restore interrupted status
+        } catch (Exception e) {
+            System.err.println("Unexpected error in Vendor thread: " + e.getMessage());
         }
-        System.out.println("Vendor has added all tickets.");
     }
 }

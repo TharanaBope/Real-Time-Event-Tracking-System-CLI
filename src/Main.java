@@ -64,7 +64,6 @@ public class Main {
                 value -> value > 0 && value >= config.totalTickets,
                 "Max ticket capacity must be greater than 0 and greater than or equal to total tickets.");
 
-
         // Optionally save configuration to a file
         System.out.print("Do you want to save this configuration to a file? (yes/no): ");
         String saveResponse = scanner.nextLine().trim().toLowerCase();
@@ -84,21 +83,29 @@ public class Main {
 
     private static int getValidatedInput(Scanner scanner, String prompt, ValidationRule validation, String errorMessage) {
         int value;
+
         while (true) {
             try {
                 System.out.print(prompt);
-                value = Integer.parseInt(scanner.nextLine());
+                String input = scanner.nextLine().trim();
+                if (input.isEmpty()) {
+                    System.out.println("Error: Input cannot be empty.");
+                    continue;
+                }
+                value = Integer.parseInt(input);
                 if (validation.isValid(value)) {
-                    break;
+                    return value; // Return valid input
                 } else {
                     System.out.println("Error: " + errorMessage);
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Error: Please enter a valid number.");
+                System.out.println("Error: Please enter a valid numeric value.");
+            } catch (Exception e) {
+                System.out.println("Unexpected error: " + e.getMessage());
             }
         }
-        return value;
     }
+
 }
 
 

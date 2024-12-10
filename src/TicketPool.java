@@ -15,34 +15,40 @@ public class TicketPool {
 
     // Add tickets to the pool
     public synchronized void addTicket(Ticket ticket) {
-        while (ticketQueue.size() >= maximumTicketCapacity) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.err.println("Vendor thread interrupted while adding tickets.");
-                return;
+        try {
+            while (ticketQueue.size() >= maximumTicketCapacity) {
+                System.out.println("TicketPool full. Vendor is waiting...");
+                wait(); // Wait until there is space
             }
+            ticketQueue.add(ticket);
+            notifyAll(); // Notify waiting consumers
+            System.out.println("Ticket added by Vendor - Current Pool Size: " + ticketQueue.size());
+        } catch (InterruptedException e) {
+            System.err.println("Vendor interrupted while adding tickets. Terminating operation.");
+            Thread.currentThread().interrupt(); // Restore interrupted status
+        } catch (Exception e) {
+            System.err.println("Unexpected error while adding ticket: " + e.getMessage());
         }
-        ticketQueue.add(ticket);
-        notifyAll();
-        System.out.println("Ticket added by Vendor - Current Pool Size: " + ticketQueue.size());
     }
 
     // Remove tickets from the pool
     public synchronized Ticket buyTicket() {
-        while (ticketQueue.isEmpty()) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.err.println("Customer thread interrupted while buying tickets.");
-                return null;
+        try {
+            while (ticketQueue.isEmpty()) {
+                System.out.println("TicketPool empty. Customer is waiting...");
+                wait(); // Wait until tickets are available
             }
+            Ticket ticket = ticketQueue.poll();
+            notifyAll(); // Notify waiting producers
+            System.out.println("Ticket bought - Remaining Pool Size: " + ticketQueue.size());
+            return ticket;
+        } catch (InterruptedException e) {
+            System.err.println("Customer interrupted while buying tickets. Terminating operation.");
+            Thread.currentThread().interrupt(); // Restore interrupted status
+            return null;
+        } catch (Exception e) {
+            System.err.println("Unexpected error while buying ticket: " + e.getMessage());
+            return null;
         }
-        Ticket ticket = ticketQueue.poll();
-        notifyAll();
-        System.out.println("Ticket bought - Remaining Pool Size: " + ticketQueue.size());
-        return ticket;
     }
 }
