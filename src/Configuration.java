@@ -3,10 +3,10 @@ import com.google.gson.JsonSyntaxException;
 import java.io.*;
 
 public class Configuration implements Serializable {
-    int totalTickets; //Total number of tickets available
-    int ticketReleaseRate; //Number of tickets released per minute
-    int customerRetrievalRate; //Number of customers retrieved per minute
-    int maxTicketCapacity; //Maximum number of tickets that can be held by a customer
+    public int totalTickets; //Total number of tickets available
+    public int ticketReleaseRate; //Number of tickets released per minute
+    public int customerRetrievalRate; //Number of customers retrieved per minute
+    public int maxTicketCapacity; //Maximum number of tickets that can be held by a customer
 //
     public int getTotalTickets() { //Gettr method for totalTickets
         return totalTickets;

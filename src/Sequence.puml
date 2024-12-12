@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+@startuml
+actor Vendor
+actor Customer
+participant TicketPool
+
+Vendor -> TicketPool: addTicket(ticket)
+activate TicketPool
+TicketPool -> TicketPool: add ticket to queue
+TicketPool -> Vendor: notifyAll()
+deactivate TicketPool
+
+Customer -> TicketPool: consumeTicket()
+activate TicketPool
+TicketPool -> TicketPool: remove ticket from queue
+TicketPool -> Customer: return ticket
+deactivate TicketPool
+
+@enduml
